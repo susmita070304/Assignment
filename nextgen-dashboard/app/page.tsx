@@ -1,32 +1,88 @@
-import CourseCard from "./courseCard";
+"use client";
+
+import { motion, Variants } from "framer-motion";
+import Coursecard from "./TempCard";
 
 export default function DashboardPage() {
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15 },
+    },
+  };
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+      },
+    },
+  };
+
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-zinc-950 text-zinc-50 font-sans">
-      <aside className="order-2 md:order-1 w-full md:basis-64 md:w-64 border-r border-zinc-900 bg-zinc-950 p-6 flex-shrink-0">
+    <div className="flex flex-col md:flex-row min-h-screen bg-zinc-950 text-zinc-50 font-sans overflow-x-hidden">
+      <motion.aside
+        initial={{ x: -60, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="order-2 md:order-1 w-full md:basis-64 md:w-64 border-r border-zinc-900 bg-zinc-950 p-6 flex-shrink-0"
+      >
         <div className="text-xl font-bold tracking-wider text-indigo-400 mb-8">
           Latest Updates
         </div>
-
         <nav className="space-y-4">
           <div className="h-10 bg-zinc-900/50 rounded-xl border border-zinc-800/50"></div>
           <div className="h-10 bg-zinc-900/50 rounded-xl border border-zinc-800/50"></div>
           <div className="h-10 bg-zinc-900/50 rounded-xl border border-zinc-800/50"></div>
         </nav>
-      </aside>
+      </motion.aside>
 
-      <main
+      <motion.main
         id="heroSection"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
         className="order-1 md:order-2 relative z-10 flex-1 min-h-screen flex items-center justify-center p-4 sm:p-8 md:p-12 w-full flex-col gap-6"
       >
-        <span className="text-xs font-semibold tracking-widest text-indigo-400 uppercase bg-indigo-500/10 px-3 py-1 rounded-full">
+        <motion.span
+          variants={itemVariants}
+          className="text-xs font-semibold tracking-widest text-indigo-400 uppercase bg-indigo-500/10 px-3 py-1 rounded-full"
+        >
           Learning Portal
-        </span>
-        <div className="group cursor-pointer relative w-full max-w-5xl">
-          <div className="absolute -inset-[2px] -z-10 animate-glowing rounded-[13px] bg-[linear-gradient(130deg,#FB5288,#208AAE,#4A0D67,#A8577E,#5E4AE3,#F5D7E3,#AA7DCE,#3B429F)] bg-[length:600%] opacity-0 blur-[15px] transition-opacity duration-300 group-hover:opacity-100" />
+        </motion.span>
+
+        {/* PROFILE CARD */}
+        <motion.div
+          variants={itemVariants}
+          whileHover="hover"
+          className="group cursor-pointer relative w-full max-w-5xl"
+        >
+          <motion.div
+            variants={{
+              hover: { opacity: 1, scale: 1.01 },
+            }}
+            animate={{
+              backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+            }}
+            transition={{
+              backgroundPosition: {
+                duration: 8,
+                repeat: Infinity,
+                ease: "linear",
+              },
+            }}
+            className="absolute -inset-[2px] -z-10 rounded-[13px] bg-[linear-gradient(130deg,#FB5288,#208AAE,#4A0D67,#A8577E,#5E4AE3,#F5D7E3,#AA7DCE,#3B429F)] bg-[length:600%_600%] opacity-0 blur-[15px] transition-opacity duration-300"
+          />
+
           <div
             id="profileCard"
-            className="bg-zinc-950 p-6 sm:p-10 rounded-xl border border-zinc-800 w-full min-h-[20rem] md:min-h-[30rem] flex flex-col items-start justify-between text-left"
+            className="bg-zinc-950 p-6 sm:p-10 rounded-xl border border-zinc-800 w-full min-h-[20rem] md:min-h-[30rem] flex flex-col items-start justify-between text-left transition-colors duration-300 group-hover:border-zinc-700"
           >
             <div className="text-xl sm:text-2xl font-bold text-white">
               Hello!! ,{" "}
@@ -34,12 +90,24 @@ export default function DashboardPage() {
                 Developer
               </span>
             </div>
+
             <div className="mt-auto pt-6 w-full max-w-xs">
-              <article className="bg-zinc-900/40 border border-zinc-800 rounded-3xl p-4 flex flex-col w-full max-w-xs">
+              <motion.article
+                whileHover={{ y: -4, scale: 1.02 }}
+                className="bg-zinc-900/40 border border-zinc-800 rounded-3xl p-4 flex flex-col w-full max-w-xs backdrop-blur-sm"
+              >
                 <div className="flex items-center gap-4 bg-zinc-950/50 border border-zinc-800/60 p-4 rounded-2xl w-fit mt-4">
-                  <div className="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center border border-amber-500/20 text-lg">
+                  <motion.div
+                    animate={{ scale: [1, 1.15, 1] }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 2,
+                      ease: "easeInOut",
+                    }}
+                    className="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center border border-amber-500/20 text-lg"
+                  >
                     🔥
-                  </div>
+                  </motion.div>
                   <div>
                     <div className="text-xs font-medium text-zinc-400">
                       Current Streak
@@ -49,17 +117,21 @@ export default function DashboardPage() {
                     </div>
                   </div>
                 </div>
-              </article>
+              </motion.article>
             </div>
           </div>
-        </div>
-        <div className="flex flex-col md:flex-row gap-6 justify-center">
-          <CourseCard title="React Basics" />
-          <CourseCard title="JavaScript" />
-          <CourseCard title="Tailwind CSS" />
-          <CourseCard title="UI/UX Design" />
-        </div>
-      </main>
+        </motion.div>
+
+        <motion.div
+          variants={itemVariants}
+          className="flex flex-col md:flex-row gap-6 justify-center w-full max-w-5xl"
+        >
+          <Coursecard title="React Basics" />
+          <Coursecard title="JavaScript" />
+          <Coursecard title="Tailwind CSS" />
+          <Coursecard title="UI/UX Design" />
+        </motion.div>
+      </motion.main>
     </div>
   );
 }
