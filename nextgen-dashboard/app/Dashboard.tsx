@@ -17,7 +17,7 @@ interface DashboardProps {
     id: string;
     content: string;
   }>;
-  activityDays: boolean[]; // <-- Add this to accept the data array directly from the server
+  activityDays: boolean[];
 }
 
 export default function DashboardPage({

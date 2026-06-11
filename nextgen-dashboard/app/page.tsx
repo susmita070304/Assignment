@@ -122,7 +122,7 @@ export default async function DashboardPage() {
         announcements={
           newsFeed && newsFeed.length > 0 ? newsFeed : fallbackAnnouncements
         }
-        activityDays={finalActivityData} // <-- Pass the real database array down here!
+        activityDays={finalActivityData}
       />
     </Suspense>
   );
