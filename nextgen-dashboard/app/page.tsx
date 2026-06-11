@@ -29,9 +29,6 @@ export default async function DashboardPage() {
     false,
     true,
     true,
-    true,
-    false,
-    true,
     false,
     true,
     true,
@@ -41,13 +38,16 @@ export default async function DashboardPage() {
     true,
     true,
     true,
+    true,
     false,
+    true,
+    true,
     false,
     true,
     true,
     true,
     true,
-    true,
+    false,
   ];
 
   const finalActivityData = activityLogs?.active_days_array || fallbackActivity;
@@ -57,12 +57,11 @@ export default async function DashboardPage() {
     .select("id, title, icon_name");
 
   const defaultCourses = [
-    { id: "react-basics-uuid", title: "React Basics", icon_name: "Atom" },
-    { id: "js-uuid", title: "JavaScript Fundamentals", icon_name: "Code" },
-    { id: "tailwind-uuid", title: "Tailwind CSS Layouts", icon_name: "Layers" },
-    { id: "uiux-uuid", title: "UI/UX System Design", icon_name: "Sparkles" },
+    { id: "react-1", title: "React Basics", icon_name: "Atom" },
+    { id: "js-2", title: "JavaScript Fundamentals", icon_name: "Code" },
+    { id: "tailwind-3", title: "Tailwind CSS Layouts", icon_name: "Layers" },
+    { id: "uiux-4", title: "UI/UX System Design", icon_name: "Sparkles" },
   ];
-
   const courseList =
     masterCourses && masterCourses.length > 0 ? masterCourses : defaultCourses;
 

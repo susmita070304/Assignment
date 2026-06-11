@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import * as Lucide from "lucide-react";
+import { Atom, Code, Layers, Sparkles } from "lucide-react";
 
 interface TempCardProps {
   title: string;
@@ -16,7 +17,11 @@ export default function Coursecard({
   isEnrolled,
   iconName,
 }: TempCardProps) {
-  const IconComponent = (Lucide as any)[iconName] || Lucide.BookOpen;
+  let IconComponent = Lucide.BookOpen;
+  if (iconName === "Atom") IconComponent = Atom;
+  if (iconName === "Code") IconComponent = Code;
+  if (iconName === "Layers") IconComponent = Layers;
+  if (iconName === "Sparkles") IconComponent = Sparkles;
 
   return (
     <motion.div
