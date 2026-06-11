@@ -28,7 +28,6 @@ export default function Coursecard({
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
       className="group cursor-pointer relative w-full"
     >
-      {/* DYNAMIC SHADOW MESH GRADIENT LAYER THAT ACTIVATES ON HOVER */}
       <motion.div
         variants={{
           hover: { opacity: 0.4, scale: 1.02 },
@@ -46,7 +45,6 @@ export default function Coursecard({
         className="absolute -inset-[1px] -z-10 rounded-2xl bg-[linear-gradient(130deg,#FB5288,#208AAE,#4A0D67,#A8577E,#5E4AE3)] bg-[length:400%_400%] opacity-0 blur-md transition-opacity duration-300"
       />
 
-      {/* MAIN CONTENT CARD ACCENT BOX */}
       <div className="bg-zinc-900/90 backdrop-blur-md border border-zinc-800 p-5 rounded-2xl flex flex-col justify-between min-h-[12rem] group-hover:border-zinc-700 transition-colors shadow-lg w-full">
         <div className="flex justify-between items-start w-full">
           <div className="w-10 h-10 bg-zinc-950 rounded-xl flex items-center justify-center border border-zinc-800 text-indigo-400">

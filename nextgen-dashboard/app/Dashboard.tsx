@@ -3,7 +3,6 @@
 import { motion, Variants } from "framer-motion";
 import Coursecard from "./TempCard";
 
-// The strictly typed contract matching your app/page.tsx data payload
 interface DashboardProps {
   studentName: string;
   streakCount: number;
@@ -24,7 +23,7 @@ export default function DashboardPage({
   studentName,
   streakCount,
   cards,
-  announcements, // <-- Destructured correctly to receive your server records
+  announcements,
 }: DashboardProps) {
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -49,7 +48,6 @@ export default function DashboardPage({
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-zinc-950 text-zinc-50 font-sans overflow-x-hidden">
-      {/* YOUR ORIGINAL SIDEBAR WITH LATEST UPDATES FEED */}
       <motion.aside
         initial={{ x: -60, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
@@ -77,7 +75,6 @@ export default function DashboardPage({
         </nav>
       </motion.aside>
 
-      {/* YOUR ORIGINAL MAIN CONTROLLER COMPONENT GRAPH ROW */}
       <motion.main
         id="heroSection"
         variants={containerVariants}
@@ -92,7 +89,6 @@ export default function DashboardPage({
           Learning Portal
         </motion.span>
 
-        {/* YOUR ORIGINAL GRADIENT ANIMATED PROFILE CARD */}
         <motion.div
           variants={itemVariants}
           whileHover="hover"
@@ -157,7 +153,6 @@ export default function DashboardPage({
           </div>
         </motion.div>
 
-        {/* YOUR COURSE CARDS CONTAINER GRID */}
         <motion.div
           variants={itemVariants}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 justify-center w-full max-w-5xl"
