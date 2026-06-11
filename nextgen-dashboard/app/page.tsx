@@ -3,10 +3,9 @@ import { supabase } from "./lib/supabase";
 import DashboardPageClient from "./Dashboard";
 import Loading from "./Loading";
 
-export const revalidate = 0; // Forces dynamic rendering on every request, bypassing stale cache
+export const revalidate = 0;
 
 export default async function DashboardPage() {
-  // 1. Fetch Student Profile Meta
   const { data: profiles } = await supabase
     .from("profiles")
     .select("id, full_name, current_streak")
@@ -18,12 +17,45 @@ export default async function DashboardPage() {
     current_streak: 7,
   };
 
-  // 2. Fetch Master Curriculums
+  const { data: activityLogs } = await supabase
+    .from("user_activity")
+    .select("active_days_array")
+    .eq("user_id", profile.id)
+    .single();
+
+  const fallbackActivity = [
+    true,
+    true,
+    false,
+    true,
+    true,
+    true,
+    false,
+    true,
+    false,
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+  ];
+
+  const finalActivityData = activityLogs?.active_days_array || fallbackActivity;
+
   const { data: masterCourses } = await supabase
     .from("courses")
     .select("id, title, icon_name");
 
-  // Custom schemas using strictly strings mapping directly to Lucide React components
   const defaultCourses = [
     { id: "react-basics-uuid", title: "React Basics", icon_name: "Atom" },
     { id: "js-uuid", title: "JavaScript Fundamentals", icon_name: "Code" },
@@ -31,16 +63,14 @@ export default async function DashboardPage() {
     { id: "uiux-uuid", title: "UI/UX System Design", icon_name: "Sparkles" },
   ];
 
-  const finalMasterCourses =
+  const courseList =
     masterCourses && masterCourses.length > 0 ? masterCourses : defaultCourses;
 
-  // 3. Fetch Active Student Progress Logs
   const { data: enrollments } = await supabase
     .from("enrollments")
     .select("course_id, progress")
     .eq("student_id", profile.id);
 
-  // 4. Fetch Announcements Feed Pipeline
   const { data: newsFeed } = await supabase
     .from("announcements")
     .select("id, content")
@@ -48,7 +78,7 @@ export default async function DashboardPage() {
 
   const enrolledIds = enrollments?.map((e) => String(e.course_id)) || [];
 
-  const enrolledCards = finalMasterCourses
+  const enrolledCards = courseList
     .filter((course) => enrolledIds.includes(String(course.id)))
     .map((course) => {
       const enrollmentRecord = enrollments?.find(
@@ -63,7 +93,7 @@ export default async function DashboardPage() {
       };
     });
 
-  const availableCards = finalMasterCourses
+  const availableCards = courseList
     .filter((course) => !enrolledIds.includes(String(course.id)))
     .map((course) => ({
       id: String(course.id),
@@ -73,14 +103,10 @@ export default async function DashboardPage() {
       isEnrolled: false,
     }));
 
-  const totalDisplayCards = [...enrolledCards, ...availableCards];
+  const dashboardCards = [...enrolledCards, ...availableCards];
 
   const fallbackAnnouncements = [
-    {
-      id: "ex1",
-      content:
-        "Next-Gen Dashboard v2.0 features are now live! Enjoy hardware-accelerated animations.",
-    },
+    { id: "ex1", content: "Next-Gen Dashboard v2.0 features are now live!" },
     {
       id: "ex2",
       content:
@@ -93,10 +119,11 @@ export default async function DashboardPage() {
       <DashboardPageClient
         studentName={profile.full_name}
         streakCount={profile.current_streak}
-        cards={totalDisplayCards}
+        cards={dashboardCards}
         announcements={
           newsFeed && newsFeed.length > 0 ? newsFeed : fallbackAnnouncements
         }
+        activityDays={finalActivityData} // <-- Pass the real database array down here!
       />
     </Suspense>
   );
