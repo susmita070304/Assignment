@@ -8,13 +8,12 @@ export const revalidate = 0;
 export default async function DashboardPage() {
   const { data: profiles } = await supabase
     .from("profiles")
-    .select("id, full_name, current_streak")
+    .select("*")
     .limit(1);
-
   const profile = profiles?.[0] || {
-    id: "00000000-0000-0000-0000-000000000000",
     full_name: "Susmita Kar",
     current_streak: 7,
+    id: "0000",
   };
 
   const { data: activityLogs } = await supabase
@@ -22,6 +21,16 @@ export default async function DashboardPage() {
     .select("active_days_array")
     .eq("user_id", profile.id)
     .single();
+
+  const { data: masterCourses } = await supabase.from("courses").select("*");
+  const { data: enrollments } = await supabase
+    .from("enrollments")
+    .select("*")
+    .eq("student_id", profile.id);
+  const { data: newsFeed } = await supabase
+    .from("announcements")
+    .select("*")
+    .order("created_at", { ascending: false });
 
   const fallbackActivity = [
     true,
@@ -36,81 +45,32 @@ export default async function DashboardPage() {
     true,
     false,
     true,
-    true,
-    true,
-    true,
-    false,
-    true,
-    true,
-    false,
-    true,
-    true,
-    true,
-    true,
-    false,
   ];
-
   const finalActivityData = activityLogs?.active_days_array || fallbackActivity;
 
-  const { data: masterCourses } = await supabase
-    .from("courses")
-    .select("id, title, icon_name");
-
-  const defaultCourses = [
-    { id: "react-1", title: "React Basics", icon_name: "Atom" },
-    { id: "js-2", title: "JavaScript Fundamentals", icon_name: "Code" },
-    { id: "tailwind-3", title: "Tailwind CSS Layouts", icon_name: "Layers" },
-    { id: "uiux-4", title: "UI/UX System Design", icon_name: "Sparkles" },
-  ];
-  const courseList =
-    masterCourses && masterCourses.length > 0 ? masterCourses : defaultCourses;
-
-  const { data: enrollments } = await supabase
-    .from("enrollments")
-    .select("course_id, progress")
-    .eq("student_id", profile.id);
-
-  const { data: newsFeed } = await supabase
-    .from("announcements")
-    .select("id, content")
-    .order("created_at", { ascending: false });
-
+  const courseList = masterCourses || [];
   const enrolledIds = enrollments?.map((e) => String(e.course_id)) || [];
 
-  const enrolledCards = courseList
-    .filter((course) => enrolledIds.includes(String(course.id)))
-    .map((course) => {
-      const enrollmentRecord = enrollments?.find(
-        (e) => String(e.course_id) === String(course.id),
-      );
-      return {
-        id: String(course.id),
-        title: course.title,
-        iconName: course.icon_name,
-        progress: enrollmentRecord ? enrollmentRecord.progress : 0,
-        isEnrolled: true,
-      };
-    });
+  const dashboardCards = [];
 
-  const availableCards = courseList
-    .filter((course) => !enrolledIds.includes(String(course.id)))
-    .map((course) => ({
+  for (const course of courseList) {
+    const isEnrolled = enrolledIds.includes(String(course.id));
+    const enrollment = enrollments?.find(
+      (e) => String(e.course_id) === String(course.id),
+    );
+
+    dashboardCards.push({
       id: String(course.id),
       title: course.title,
       iconName: course.icon_name,
-      progress: 0,
-      isEnrolled: false,
-    }));
-
-  const dashboardCards = [...enrolledCards, ...availableCards];
+      progress: isEnrolled ? enrollment?.progress || 0 : 0,
+      isEnrolled: isEnrolled,
+    });
+  }
 
   const fallbackAnnouncements = [
-    { id: "ex1", content: "Next-Gen Dashboard v2.0 features are now live!" },
-    {
-      id: "ex2",
-      content:
-        "Scheduled system database optimization tonight at 12:00 AM UTC.",
-    },
+    { id: "1", content: "Welcome to the portal!" },
+    { id: "2", content: "Check out the new React course." },
   ];
 
   return (

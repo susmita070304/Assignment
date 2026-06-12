@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import Coursecard from "./TempCard";
 
 interface DashboardProps {
@@ -27,31 +27,16 @@ export default function DashboardPage({
   announcements,
   activityDays,
 }: DashboardProps) {
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.12 },
-    },
-  };
-
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 15 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 115,
-        damping: 14,
-      },
-    },
-  };
-
-  const totalActiveDays = activityDays.filter(Boolean).length;
+  let totalActiveDays = 0;
+  for (let i = 0; i < activityDays.length; i++) {
+    if (activityDays[i] === true) {
+      totalActiveDays++;
+    }
+  }
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-zinc-950 text-zinc-50 font-sans overflow-x-hidden">
+      {/*  Latest Updates */}
       <motion.aside
         initial={{ x: -60, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
@@ -78,36 +63,36 @@ export default function DashboardPage({
           )}
         </nav>
       </motion.aside>
-
+      {/* Main Content */}
       <motion.main
         id="heroSection"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
         className="order-1 md:order-2 relative z-10 flex-1 min-h-screen p-4 sm:p-8 md:p-12 w-full flex-col flex gap-6 max-w-6xl mx-auto"
       >
         <div className="w-full">
           <motion.span
-            variants={itemVariants}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
             className="text-xs font-semibold tracking-widest text-indigo-400 uppercase bg-indigo-500/10 px-3 py-1 rounded-full"
           >
             Learning Portal
           </motion.span>
         </div>
-
+        {/* Profile Card */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full items-start">
           <motion.div
-            variants={itemVariants}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: "spring", stiffness: 115, damping: 14 }}
             whileHover="hover"
             className="group cursor-pointer relative lg:col-span-2 w-full"
           >
             <motion.div
-              variants={{
-                hover: { opacity: 1, scale: 1.01 },
-              }}
-              animate={{
-                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-              }}
+              variants={{ hover: { opacity: 1, scale: 1.01 } }}
+              animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
               transition={{
                 backgroundPosition: {
                   duration: 8,
@@ -128,7 +113,7 @@ export default function DashboardPage({
                   {studentName}
                 </span>
               </div>
-
+              {/* Streak Count */}
               <div className="mt-auto pt-6 w-full max-w-xs">
                 <motion.article
                   whileHover={{ y: -4, scale: 1.02 }}
@@ -161,13 +146,19 @@ export default function DashboardPage({
           </motion.div>
 
           <motion.div
-            variants={itemVariants}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              type: "spring",
+              stiffness: 115,
+              damping: 14,
+              delay: 0.2,
+            }}
             className="bg-zinc-900/20 rounded-xl border border-zinc-800 p-6 flex flex-col justify-between min-h-[18rem] md:min-h-[22rem] w-full"
           >
             <div className="text-xs font-semibold text-zinc-400 tracking-wider uppercase">
               Activity Tracking
             </div>
-
             <div className="grid grid-cols-6 gap-2 max-w-[160px] mx-auto my-auto w-full">
               {activityDays.map((wasActive, index) => (
                 <div
@@ -180,7 +171,7 @@ export default function DashboardPage({
                 />
               ))}
             </div>
-
+            {/* Tracking activity */}
             <div className="text-[10px] text-zinc-400 tracking-wide font-medium">
               Total usage:{" "}
               <span className="text-indigo-400 font-bold">
@@ -195,7 +186,7 @@ export default function DashboardPage({
               Active Courses
             </div>
           </div>
-
+          {/* Active Courses */}
           <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
             {cards.map((course) => (
               <Coursecard
